@@ -1643,10 +1643,10 @@ FunctionDefinition const* SMTEncoder::functionCallToDefinition(FunctionCall cons
 		calledExpr = fun->components().front().get();
 	}
 
-	if (Identifier const* fun = dynamic_cast<Identifier const*>(calledExpr))
-		funDef = dynamic_cast<FunctionDefinition const*>(fun->annotation().referencedDeclaration);
-	else if (MemberAccess const* fun = dynamic_cast<MemberAccess const*>(calledExpr))
-		funDef = dynamic_cast<FunctionDefinition const*>(fun->annotation().referencedDeclaration);
+	if (Identifier const* identifierFun = dynamic_cast<Identifier const*>(calledExpr))
+		funDef = dynamic_cast<FunctionDefinition const*>(identifierFun->annotation().referencedDeclaration);
+	else if (MemberAccess const* accessFun = dynamic_cast<MemberAccess const*>(calledExpr))
+		funDef = dynamic_cast<FunctionDefinition const*>(accessFun->annotation().referencedDeclaration);
 
 	return funDef;
 }

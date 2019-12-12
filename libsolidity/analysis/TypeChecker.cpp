@@ -295,12 +295,12 @@ bool TypeChecker::visit(StructDefinition const& _struct)
 		solAssert(type(*member)->canBeStored(), "Type cannot be used in struct.");
 
 	// Check recursion, fatal error if detected.
-	auto visitor = [&](StructDefinition const& _struct, CycleDetector<StructDefinition>& _cycleDetector, size_t _depth)
+	auto visitor = [&](StructDefinition const& _structDef, CycleDetector<StructDefinition>& _cycleDetector, size_t _depth)
 	{
 		if (_depth >= 256)
-			m_errorReporter.fatalDeclarationError(_struct.location(), "Struct definition exhausting cyclic dependency validator.");
+			m_errorReporter.fatalDeclarationError(_structDef.location(), "Struct definition exhausting cyclic dependency validator.");
 
-		for (ASTPointer<VariableDeclaration> const& member: _struct.members())
+		for (ASTPointer<VariableDeclaration> const& member: _structDef.members())
 		{
 			Type const* memberType = type(*member);
 			while (auto arrayType = dynamic_cast<ArrayType const*>(memberType))

@@ -363,10 +363,10 @@ void CodeFragment::constructOperation(sp::utree const& _t, CompilerState& _s)
 					_s.macros[k].code = i;
 					_s.macros[k].env = _s.outers;
 					_s.macros[k].args = args;
-					for (auto const& i: _s.args)
-						_s.macros[k].env[i.first] = i.second;
-					for (auto const& i: _s.defs)
-						_s.macros[k].env[i.first] = i.second;
+					for (auto const& arg: _s.args)
+						_s.macros[k].env[arg.first] = arg.second;
+					for (auto const& def: _s.defs)
+						_s.macros[k].env[def.first] = def.second;
 				}
 				++ii;
 			}
@@ -470,10 +470,10 @@ void CodeFragment::constructOperation(sp::utree const& _t, CompilerState& _s)
 				else
 					code.emplace_back(i, _s, m_readFile);
 			}
-		auto requireSize = [&](unsigned s) { if (code.size() != s) error<IncorrectParameterCount>(us); };
-		auto requireMinSize = [&](unsigned s) { if (code.size() < s) error<IncorrectParameterCount>(us); };
-		auto requireMaxSize = [&](unsigned s) { if (code.size() > s) error<IncorrectParameterCount>(us); };
-		auto requireDeposit = [&](unsigned i, int s) { if (code[i].m_asm.deposit() != s) error<InvalidDeposit>(us); };
+		auto requireSize = [&](unsigned size) { if (code.size() != size) error<IncorrectParameterCount>(us); };
+		auto requireMinSize = [&](unsigned size) { if (code.size() < size) error<IncorrectParameterCount>(us); };
+		auto requireMaxSize = [&](unsigned size) { if (code.size() > size) error<IncorrectParameterCount>(us); };
+		auto requireDeposit = [&](unsigned idx, int size) { if (code[idx].m_asm.deposit() != size) error<InvalidDeposit>(us); };
 
 		if (_s.macros.count(make_pair(s, code.size())))
 		{

@@ -71,25 +71,25 @@ void Rematerialiser::visit(Expression& _e)
 	if (holds_alternative<Identifier>(_e))
 	{
 		Identifier& identifier = std::get<Identifier>(_e);
-		YulString name = identifier.name;
-		if (m_value.count(name))
+		YulString identifier_name = identifier.name;
+		if (m_value.count(identifier_name))
 		{
-			assertThrow(m_value.at(name), OptimizerException, "");
-			auto const& value = *m_value.at(name);
-			size_t refs = m_referenceCounts[name];
+			assertThrow(m_value.at(identifier_name), OptimizerException, "");
+			auto const& value = *m_value.at(identifier_name);
+			size_t refs = m_referenceCounts[identifier_name];
 			size_t cost = CodeCost::codeCost(m_dialect, value);
 			if (
-				(refs <= 1 && m_variableLoopDepth.at(name) == m_loopDepth) ||
+				(refs <= 1 && m_variableLoopDepth.at(identifier_name) == m_loopDepth) ||
 				cost == 0 ||
 				(refs <= 5 && cost <= 1 && m_loopDepth == 0) ||
 				m_varsToAlwaysRematerialize.count(name)
 			)
 			{
-				assertThrow(m_referenceCounts[name] > 0, OptimizerException, "");
-				for (auto const& ref: m_references.forward[name])
+				assertThrow(m_referenceCounts[identifier_name] > 0, OptimizerException, "");
+				for (auto const& ref: m_references.forward[identifier_name])
 					assertThrow(inScope(ref), OptimizerException, "");
 				// update reference counts
-				m_referenceCounts[name]--;
+				m_referenceCounts[identifier_name]--;
 				for (auto const& ref: ReferencesCounter::countReferences(value))
 					m_referenceCounts[ref.first] += ref.second;
 				_e = (ASTCopier{}).translate(value);
@@ -104,10 +104,10 @@ void LiteralRematerialiser::visit(Expression& _e)
 	if (holds_alternative<Identifier>(_e))
 	{
 		Identifier& identifier = std::get<Identifier>(_e);
-		YulString name = identifier.name;
-		if (m_value.count(name))
+		YulString identifier_name = identifier.name;
+		if (m_value.count(identifier_name))
 		{
-			Expression const* value = m_value.at(name);
+			Expression const* value = m_value.at(identifier_name);
 			assertThrow(value, OptimizerException, "");
 			if (holds_alternative<Literal>(*value))
 				_e = *value;

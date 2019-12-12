@@ -76,7 +76,6 @@ ASTJSONTest::ASTJSONTest(string const& _filename)
 	file.open(m_astFilename);
 	if (file)
 	{
-		string line;
 		while (getline(file, line))
 			m_expectation += line + "\n";
 	}
@@ -85,7 +84,6 @@ ASTJSONTest::ASTJSONTest(string const& _filename)
 	file.open(m_legacyAstFilename);
 	if (file)
 	{
-		string line;
 		while (getline(file, line))
 			m_expectationLegacy += line + "\n";
 	}

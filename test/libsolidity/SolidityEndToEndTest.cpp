@@ -2508,7 +2508,7 @@ BOOST_AUTO_TEST_CASE(default_fallback_throws)
 
 	if (solidity::test::Options::get().evmVersion().hasStaticCall())
 	{
-		char const* sourceCode = R"YY(
+		sourceCode = R"YY(
 			contract A {
 				function f() public returns (bool) {
 					(bool success, bytes memory data) = address(this).staticcall("");
@@ -12496,7 +12496,7 @@ BOOST_AUTO_TEST_CASE(bare_call_invalid_address)
 
 	if (solidity::test::Options::get().evmVersion().hasStaticCall())
 	{
-		char const* sourceCode = R"YY(
+		sourceCode = R"YY(
 			contract C {
 				function f() external returns (bool, bytes memory) {
 					return address(0x4242).staticcall("");

@@ -1973,14 +1973,14 @@ void ExpressionCompiler::appendShiftOperatorCode(Token _operator, Type const& _v
 
 	// The amount can be a RationalNumberType too.
 	bool c_amountSigned = false;
-	if (auto amountType = dynamic_cast<RationalNumberType const*>(&_shiftAmountType))
+	if (auto rationalAmountType = dynamic_cast<RationalNumberType const*>(&_shiftAmountType))
 	{
 		// This should be handled by the type checker.
-		solAssert(amountType->integerType(), "");
-		solAssert(!amountType->integerType()->isSigned(), "");
+		solAssert(rationalAmountType->integerType(), "");
+		solAssert(!rationalAmountType->integerType()->isSigned(), "");
 	}
-	else if (auto amountType = dynamic_cast<IntegerType const*>(&_shiftAmountType))
-		c_amountSigned = amountType->isSigned();
+	else if (auto integerAmountType = dynamic_cast<IntegerType const*>(&_shiftAmountType))
+		c_amountSigned = integerAmountType->isSigned();
 	else
 		solAssert(false, "Invalid shift amount type.");
 

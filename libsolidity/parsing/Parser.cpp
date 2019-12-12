@@ -950,8 +950,8 @@ ASTPointer<TypeName> Parser::parseTypeName(bool _allowVar)
 		unsigned secondSize;
 		tie(firstSize, secondSize) = m_scanner->currentTokenInfo();
 		ElementaryTypeNameToken elemTypeName(token, firstSize, secondSize);
-		ASTNodeFactory nodeFactory(*this);
-		nodeFactory.markEndPosition();
+		ASTNodeFactory typeNodeFactory(*this);
+		typeNodeFactory.markEndPosition();
 		m_scanner->next();
 		auto stateMutability = elemTypeName.token() == Token::Address
 			? optional<StateMutability>{StateMutability::NonPayable}
@@ -960,7 +960,7 @@ ASTPointer<TypeName> Parser::parseTypeName(bool _allowVar)
 		{
 			if (elemTypeName.token() == Token::Address)
 			{
-				nodeFactory.markEndPosition();
+				typeNodeFactory.markEndPosition();
 				stateMutability = parseStateMutability();
 			}
 			else
@@ -969,7 +969,7 @@ ASTPointer<TypeName> Parser::parseTypeName(bool _allowVar)
 				m_scanner->next();
 			}
 		}
-		type = nodeFactory.createNode<ElementaryTypeName>(elemTypeName, stateMutability);
+		type = typeNodeFactory.createNode<ElementaryTypeName>(elemTypeName, stateMutability);
 	}
 	else if (token == Token::Var)
 	{

@@ -236,17 +236,17 @@ void ExpressionEvaluator::operator()(FunctionCall const& _funCall)
 {
 	evaluateArgs(_funCall.arguments);
 
-	if (EVMDialect const* dialect = dynamic_cast<EVMDialect const*>(&m_dialect))
+	if (EVMDialect const* evmDialect = dynamic_cast<EVMDialect const*>(&m_dialect))
 	{
-		if (BuiltinFunctionForEVM const* fun = dialect->builtin(_funCall.functionName.name))
+		if (BuiltinFunctionForEVM const* fun = evmDialect->builtin(_funCall.functionName.name))
 		{
 			EVMInstructionInterpreter interpreter(m_state);
 			setValue(interpreter.evalBuiltin(*fun, values()));
 			return;
 		}
 	}
-	else if (WasmDialect const* dialect = dynamic_cast<WasmDialect const*>(&m_dialect))
-		if (dialect->builtin(_funCall.functionName.name))
+	else if (WasmDialect const* wasmDialect = dynamic_cast<WasmDialect const*>(&m_dialect))
+		if (wasmDialect->builtin(_funCall.functionName.name))
 		{
 			EwasmBuiltinInterpreter interpreter(m_state);
 			setValue(interpreter.evalBuiltin(_funCall.functionName.name, values()));

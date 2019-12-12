@@ -87,9 +87,9 @@ void VarNameCleaner::renameVariables(vector<TypedName>& _variables)
 
 void VarNameCleaner::operator()(Identifier& _identifier)
 {
-	auto name = m_translatedNames.find(_identifier.name);
-	if (name != m_translatedNames.end())
-		_identifier.name = name->second;
+	auto identifier_name = m_translatedNames.find(_identifier.name);
+	if (identifier_name != m_translatedNames.end())
+		_identifier.name = identifier_name->second;
 }
 
 YulString VarNameCleaner::findCleanName(YulString const& _name) const

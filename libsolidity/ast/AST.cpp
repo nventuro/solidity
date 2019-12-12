@@ -573,8 +573,6 @@ bool VariableDeclaration::hasReferenceOrMappingType() const
 
 set<VariableDeclaration::Location> VariableDeclaration::allowedDataLocations() const
 {
-	using Location = VariableDeclaration::Location;
-
 	if (!hasReferenceOrMappingType() || isStateVariable() || isEventParameter())
 		return set<Location>{ Location::Unspecified };
 	else if (isStateVariable() && isConstant())

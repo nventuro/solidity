@@ -166,10 +166,10 @@ std::optional<solidity::frontend::test::ParameterList> ContractABIUtils::paramet
 
 				if (appendTypesFromName(output, inplaceTypes, dynamicTypes))
 				{
-					for (auto const& type: inplaceTypes)
-						inplaceTypeParams.push_back(Parameter{bytes(), "", type, FormatInfo{}});
-					for (auto const& type: dynamicTypes)
-						dynamicTypeParams.push_back(Parameter{bytes(), "", type, FormatInfo{}});
+					for (auto const& inplaceType: inplaceTypes)
+						inplaceTypeParams.push_back(Parameter{bytes(), "", inplaceType, FormatInfo{}});
+					for (auto const& dynamicType: dynamicTypes)
+						dynamicTypeParams.push_back(Parameter{bytes(), "", dynamicType, FormatInfo{}});
 				}
 				else
 				{

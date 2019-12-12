@@ -208,8 +208,8 @@ void RedundantAssignEliminator::operator()(Continue const&)
 
 void RedundantAssignEliminator::operator()(Leave const&)
 {
-	for (YulString name: m_returnVariables)
-		changeUndecidedTo(name, State::Used);
+	for (YulString var: m_returnVariables)
+		changeUndecidedTo(var, State::Used);
 }
 
 void RedundantAssignEliminator::operator()(Block const& _block)

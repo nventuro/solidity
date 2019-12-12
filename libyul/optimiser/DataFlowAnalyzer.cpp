@@ -42,30 +42,30 @@ using namespace solidity::yul;
 
 void DataFlowAnalyzer::operator()(ExpressionStatement& _statement)
 {
-	if (auto vars = isSimpleStore(evmasm::Instruction::SSTORE, _statement))
+	if (auto sstore_vars = isSimpleStore(evmasm::Instruction::SSTORE, _statement))
 	{
 		ASTModifier::operator()(_statement);
 		set<YulString> keysToErase;
 		for (auto const& item: m_storage.values)
 			if (!(
-				m_knowledgeBase.knownToBeDifferent(vars->first, item.first) ||
-				m_knowledgeBase.knownToBeEqual(vars->second, item.second)
+				m_knowledgeBase.knownToBeDifferent(sstore_vars->first, item.first) ||
+				m_knowledgeBase.knownToBeEqual(sstore_vars->second, item.second)
 			))
 				keysToErase.insert(item.first);
 		for (YulString const& key: keysToErase)
 			m_storage.eraseKey(key);
-		m_storage.set(vars->first, vars->second);
+		m_storage.set(sstore_vars->first, sstore_vars->second);
 	}
-	else if (auto vars = isSimpleStore(evmasm::Instruction::MSTORE, _statement))
+	else if (auto mstore_vars = isSimpleStore(evmasm::Instruction::MSTORE, _statement))
 	{
 		ASTModifier::operator()(_statement);
 		set<YulString> keysToErase;
 		for (auto const& item: m_memory.values)
-			if (!m_knowledgeBase.knownToBeDifferentByAtLeast32(vars->first, item.first))
+			if (!m_knowledgeBase.knownToBeDifferentByAtLeast32(mstore_vars->first, item.first))
 				keysToErase.insert(item.first);
 		for (YulString const& key: keysToErase)
 			m_memory.eraseKey(key);
-		m_memory.set(vars->first, vars->second);
+		m_memory.set(mstore_vars->first, mstore_vars->second);
 	}
 	else
 	{

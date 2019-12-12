@@ -162,11 +162,11 @@ Json::Value ABI::formatType(
 			ret["type"] = _encodingType.canonicalName() + suffix;
 		else
 		{
-			string suffix;
+			string arraySuffix;
 			if (arrayType->isDynamicallySized())
-				suffix = "[]";
+				arraySuffix = "[]";
 			else
-				suffix = string("[") + arrayType->length().str() + "]";
+				arraySuffix = string("[") + arrayType->length().str() + "]";
 			solAssert(arrayType->baseType(), "");
 			Json::Value subtype = formatType(
 				"",
@@ -176,11 +176,11 @@ Json::Value ABI::formatType(
 			);
 			if (subtype.isMember("components"))
 			{
-				ret["type"] = subtype["type"].asString() + suffix;
+				ret["type"] = subtype["type"].asString() + arraySuffix;
 				ret["components"] = subtype["components"];
 			}
 			else
-				ret["type"] = subtype["type"].asString() + suffix;
+				ret["type"] = subtype["type"].asString() + arraySuffix;
 		}
 	}
 	else if (StructType const* structType = dynamic_cast<StructType const*>(&_encodingType))

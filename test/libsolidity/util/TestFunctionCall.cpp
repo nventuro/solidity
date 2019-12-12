@@ -195,8 +195,6 @@ string TestFunctionCall::formatBytesParameters(
 	bool _failure
 ) const
 {
-	using ParameterList = solidity::frontend::test::ParameterList;
-
 	stringstream os;
 
 	if (_bytes.empty())
