@@ -84,8 +84,6 @@ void ArrayUtils::copyArrayToStorage(ArrayType const& _targetType, ArrayType cons
 		[=](CompilerContext& _context)
 		{
 			ArrayUtils utils(_context);
-			ArrayType const& _sourceType = dynamic_cast<ArrayType const&>(*sourceType);
-			ArrayType const& _targetType = dynamic_cast<ArrayType const&>(*targetType);
 			// stack: target_ref source_ref source_length
 			_context << Instruction::DUP3;
 			// stack: target_ref source_ref source_length target_ref

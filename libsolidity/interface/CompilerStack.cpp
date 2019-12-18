@@ -1519,8 +1519,8 @@ Json::Value CompilerStack::gasEstimates(string const& _contractName) const
 			FunctionType type(*it);
 			string sig = it->name() + "(";
 			auto paramTypes = type.parameterTypes();
-			for (auto params_it = paramTypes.begin(); params_it != paramTypes.end(); ++params_it)
-				sig += (*params_it)->toString() + (params_it + 1 == paramTypes.end() ? "" : ",");
+			for (auto paramsIt = paramTypes.begin(); paramsIt != paramTypes.end(); ++paramsIt)
+				sig += (*paramsIt)->toString() + (paramsIt + 1 == paramTypes.end() ? "" : ",");
 			sig += ")";
 
 			internalFunctions[sig] = gasToJson(gas);
