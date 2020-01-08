@@ -76,13 +76,13 @@ void CommonSubexpressionEliminator::visit(Expression& _e)
 	if (holds_alternative<Identifier>(_e))
 	{
 		Identifier& identifier = std::get<Identifier>(_e);
-		YulString identifier_name = identifier.name;
-		if (m_value.count(identifier_name))
+		YulString identifierName = identifier.name;
+		if (m_value.count(identifierName))
 		{
-			assertThrow(m_value.at(identifier_name), OptimizerException, "");
-			if (holds_alternative<Identifier>(*m_value.at(identifier_name)))
+			assertThrow(m_value.at(identifierName), OptimizerException, "");
+			if (holds_alternative<Identifier>(*m_value.at(identifierName)))
 			{
-				YulString value = std::get<Identifier>(*m_value.at(identifier_name)).name;
+				YulString value = std::get<Identifier>(*m_value.at(identifierName)).name;
 				assertThrow(inScope(value), OptimizerException, "");
 				_e = Identifier{locationOf(_e), value};
 			}

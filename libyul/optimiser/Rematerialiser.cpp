@@ -71,25 +71,25 @@ void Rematerialiser::visit(Expression& _e)
 	if (holds_alternative<Identifier>(_e))
 	{
 		Identifier& identifier = std::get<Identifier>(_e);
-		YulString identifier_name = identifier.name;
-		if (m_value.count(identifier_name))
+		YulString identifierName = identifier.name;
+		if (m_value.count(identifierName))
 		{
-			assertThrow(m_value.at(identifier_name), OptimizerException, "");
-			auto const& value = *m_value.at(identifier_name);
-			size_t refs = m_referenceCounts[identifier_name];
+			assertThrow(m_value.at(identifierName), OptimizerException, "");
+			auto const& value = *m_value.at(identifierName);
+			size_t refs = m_referenceCounts[identifierName];
 			size_t cost = CodeCost::codeCost(m_dialect, value);
 			if (
-				(refs <= 1 && m_variableLoopDepth.at(identifier_name) == m_loopDepth) ||
+				(refs <= 1 && m_variableLoopDepth.at(identifierName) == m_loopDepth) ||
 				cost == 0 ||
 				(refs <= 5 && cost <= 1 && m_loopDepth == 0) ||
 				m_varsToAlwaysRematerialize.count(name)
 			)
 			{
-				assertThrow(m_referenceCounts[identifier_name] > 0, OptimizerException, "");
-				for (auto const& ref: m_references.forward[identifier_name])
+				assertThrow(m_referenceCounts[identifierName] > 0, OptimizerException, "");
+				for (auto const& ref: m_references.forward[identifierName])
 					assertThrow(inScope(ref), OptimizerException, "");
 				// update reference counts
-				m_referenceCounts[identifier_name]--;
+				m_referenceCounts[identifierName]--;
 				for (auto const& ref: ReferencesCounter::countReferences(value))
 					m_referenceCounts[ref.first] += ref.second;
 				_e = (ASTCopier{}).translate(value);
@@ -104,10 +104,10 @@ void LiteralRematerialiser::visit(Expression& _e)
 	if (holds_alternative<Identifier>(_e))
 	{
 		Identifier& identifier = std::get<Identifier>(_e);
-		YulString identifier_name = identifier.name;
-		if (m_value.count(identifier_name))
+		YulString identifierName = identifier.name;
+		if (m_value.count(identifierName))
 		{
-			Expression const* value = m_value.at(identifier_name);
+			Expression const* value = m_value.at(identifierName);
 			assertThrow(value, OptimizerException, "");
 			if (holds_alternative<Literal>(*value))
 				_e = *value;
