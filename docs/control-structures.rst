@@ -286,7 +286,7 @@ the local variable holds a reference to the original state variable, **no copy i
 A second assignment to the local variable does not modify the state but only changes the
 reference. Assignments to members (or elements) of the local variable **do** change the state.
 
-If assigning **from a state variable to a  memory variable**, a copy **is made**.
+If assigning **from a state variable to a memory variable**, a copy **is made**.
 
 In the example below the call to ``g(x)`` has no effect on ``x`` because it creates
 an independent copy of the storage value in memory. However, ``h(x)`` successfully modifies ``x``
