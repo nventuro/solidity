@@ -281,7 +281,7 @@ Assigning **to a state variable** always creates an independent copy.
 Assigning **to a local variable** with the same data location creates an independent copy only for
 elementary types, i.e. static types that fit into 32 bytes.
 
-If assigning **from a state variable to a  local variable**,
+If assigning **from a state variable to a local variable**,
 the local variable holds a reference to the original state variable, **no copy is made**.
 A second assignment to the local variable does not modify the state but only changes the
 reference. Assignments to members (or elements) of the local variable **do** change the state.
