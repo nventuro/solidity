@@ -230,6 +230,10 @@ public:
 	/// This can only be called once types of variable declarations have already been resolved.
 	virtual TypePointer type() const = 0;
 
+	/// @returns the type of expressions referencing this declaration via direct access to contract names.
+	/// This can only be called once types of variable declarations have already been resolved.
+	virtual TypePointer typeViaContractName() const { return type(); }
+
 	/// @param _internal false indicates external interface is concerned, true indicates internal interface is concerned.
 	/// @returns null when it is not accessible as a function.
 	virtual FunctionTypePointer functionType(bool /*_internal*/) const { return {}; }
@@ -729,6 +733,7 @@ public:
 	ContractKind inContractKind() const;
 
 	TypePointer type() const override;
+	TypePointer typeViaContractName() const override;
 
 	/// @param _internal false indicates external interface is concerned, true indicates internal interface is concerned.
 	/// @returns null when it is not accessible as a function.

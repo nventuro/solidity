@@ -1699,7 +1699,13 @@ void TypeChecker::typeCheckFunctionCall(
 		);
 		return;
 	}
-
+	if (_functionType->kind() == FunctionType::Kind::Internal && _functionType->hasDeclaration())
+		if (auto const* functionDefinition = dynamic_cast<FunctionDefinition const*>(&_functionType->declaration()))
+			if (functionDefinition->annotation().contract != m_scope && !functionDefinition->isImplemented())
+				m_errorReporter.typeError(
+					_functionCall.location(),
+					"Cannot call unimplemented base function."
+				);
 
 	// Check for unsupported use of bare static call
 	if (

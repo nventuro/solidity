@@ -317,6 +317,13 @@ TypePointer FunctionDefinition::type() const
 	return TypeProvider::function(*this, FunctionType::Kind::Internal);
 }
 
+TypePointer FunctionDefinition::typeViaContractName() const
+{
+	if (annotation().contract->isLibrary())
+		return FunctionType(*this).asCallableFunction(true);
+	return TypeProvider::function(*this, FunctionType::Kind::Declaration);
+}
+
 string FunctionDefinition::externalSignature() const
 {
 	return TypeProvider::function(*this)->externalSignature();

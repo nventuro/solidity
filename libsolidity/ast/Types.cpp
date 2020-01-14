@@ -3430,29 +3430,14 @@ MemberList::MemberMap TypeType::nativeMembers(ContractDefinition const* _current
 		{
 			if (dynamic_cast<ModifierDefinition const*>(declaration))
 				continue;
-			else if (auto const* function = dynamic_cast<FunctionDefinition const*>(declaration))
-			{
-				if (contract.isLibrary() && declaration->isVisibleAsLibraryMember())
-					members.emplace_back(function->name(), FunctionType(*function).asCallableFunction(true), declaration);
-				else if (!contract.isLibrary() && inDerivingScope && function->isVisibleInDerivedContracts())
-				{
-					if (function->isImplemented())
-						members.emplace_back(declaration->name(), declaration->type(), declaration);
-					else
-						members.emplace_back(function->name(), TypeProvider::function(*function), function);
-				}
-				else if (declaration->isVisibleViaContractName())
-					members.emplace_back(function->name(), TypeProvider::function(*function), function);
-			}
-			else if (contract.isLibrary())
-			{
-				if (declaration->isVisibleAsLibraryMember())
-					members.emplace_back(declaration->name(), declaration->type(), declaration);
-			}
-			else if (inDerivingScope && declaration->isVisibleInDerivedContracts())
-					members.emplace_back(declaration->name(), declaration->type(), declaration);
-			else if (declaration->isVisibleViaContractName())
-					members.emplace_back(declaration->name(), declaration->type(), declaration);
+
+			if (!contract.isLibrary() && inDerivingScope && declaration->isVisibleInDerivedContracts())
+				members.emplace_back(declaration->name(), declaration->type(), declaration);
+			else if (
+				(contract.isLibrary() && declaration->isVisibleAsLibraryMember()) ||
+				declaration->isVisibleViaContractName()
+			)
+				members.emplace_back(declaration->name(), declaration->typeViaContractName(), declaration);
 		}
 	}
 	else if (m_actualType->category() == Category::Enum)
