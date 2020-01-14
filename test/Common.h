@@ -22,7 +22,6 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/program_options.hpp>
-#include <boost/noncopyable.hpp>
 
 namespace solidity::test
 {
@@ -41,13 +40,15 @@ static constexpr auto evmoneDownloadLink = "https://github.com/ethereum/evmone/r
 
 struct ConfigException : public util::Exception {};
 
-struct CommonOptions: boost::noncopyable
+struct CommonOptions
 {
 	boost::filesystem::path evmonePath;
 	boost::filesystem::path testPath;
 	bool optimize = false;
 	bool optimizeYul = false;
 	bool disableSMT = false;
+	bool useABIEncoderV2 = false;
+	bool showMessages = false;
 
 	langutil::EVMVersion evmVersion() const;
 
@@ -55,13 +56,18 @@ struct CommonOptions: boost::noncopyable
 	// Throws a ConfigException on error
 	virtual void validate() const;
 
-protected:
+	static CommonOptions const& get();
+	static void setSingleton(CommonOptions&& _instance);
+
 	CommonOptions(std::string caption = "");
+	CommonOptions(CommonOptions&&) = default;
+protected:
 
 	boost::program_options::options_description options;
 
 private:
 	std::string evmVersionString;
+	static std::optional<CommonOptions> m_singleton;
 };
 
 }

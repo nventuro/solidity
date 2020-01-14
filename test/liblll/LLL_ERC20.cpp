@@ -394,7 +394,7 @@ protected:
 		if (!s_compiledErc20)
 		{
 			vector<string> errors;
-			s_compiledErc20.reset(new bytes(compileLLL(erc20Code, solidity::test::Options::get().evmVersion(), solidity::test::Options::get().optimize, &errors)));
+			s_compiledErc20.reset(new bytes(compileLLL(erc20Code, solidity::test::CommonOptions::get().evmVersion(), solidity::test::CommonOptions::get().optimize, &errors)));
 			BOOST_REQUIRE(errors.empty());
 		}
 		sendMessage(*s_compiledErc20, true);

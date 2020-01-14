@@ -51,7 +51,7 @@ public:
 		std::vector<std::string> errors;
 		bytes bytecode = lll::compileLLL(
 			_sourceCode,
-			solidity::test::Options::get().evmVersion(),
+			solidity::test::CommonOptions::get().evmVersion(),
 			m_optimiserSettings == solidity::frontend::OptimiserSettings::standard(),
 			&errors
 		);

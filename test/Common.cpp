@@ -15,6 +15,7 @@
 	along with solidity.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdexcept>
 #include <test/Common.h>
 
 #include <libsolutil/Assertions.h>
@@ -91,7 +92,11 @@ CommonOptions::CommonOptions(std::string _caption):
 		("evm-version", po::value(&evmVersionString), "which evm version to use")
 		("testpath", po::value<fs::path>(&this->testPath)->default_value(solidity::test::testPath()), "path to test files")
 		("evmonepath", po::value<fs::path>(&evmonePath)->default_value(EVMOneEnvOrDefaultPath()), "path to evmone library")
-		("no-smt", po::bool_switch(&disableSMT), "disable SMT checker");
+		("no-smt", po::bool_switch(&disableSMT), "disable SMT checker")
+		("optimize", po::bool_switch(&optimize), "enables optimization")
+		("optimize-yul", po::bool_switch(&optimizeYul), "enables Yul optimization")
+		("abiencoderv2", po::bool_switch(&useABIEncoderV2), "enables abi encoder v2")
+		("show-messages", po::bool_switch(&showMessages), "enables message output");
 }
 
 void CommonOptions::validate() const
@@ -150,5 +155,21 @@ langutil::EVMVersion CommonOptions::evmVersion() const
 	else
 		return langutil::EVMVersion();
 }
+
+
+CommonOptions const& CommonOptions::get()
+{
+	if (!m_singleton.has_value())
+		throw std::runtime_error("Options not yet constructed!");
+
+	return m_singleton.value();
+}
+
+void CommonOptions::setSingleton(CommonOptions&& _instance)
+{
+	m_singleton.emplace(std::move(_instance));
+}
+
+std::optional<CommonOptions> CommonOptions::m_singleton = {};
 
 }

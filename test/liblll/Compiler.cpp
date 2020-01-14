@@ -20,7 +20,7 @@
  * Unit tests for the LLL compiler.
  */
 
-#include <test/Options.h>
+#include <test/Common.h>
 
 #include <libsolutil/FixedHash.h>
 
@@ -43,7 +43,7 @@ namespace
 bool successCompile(string const& _sourceCode)
 {
 	vector<string> errors;
-	bytes bytecode = lll::compileLLL(_sourceCode, solidity::test::Options::get().evmVersion(), false, &errors);
+	bytes bytecode = lll::compileLLL(_sourceCode, solidity::test::CommonOptions::get().evmVersion(), false, &errors);
 	if (!errors.empty())
 		return false;
 	if (bytecode.empty())
@@ -362,7 +362,7 @@ BOOST_AUTO_TEST_CASE(valid_opcodes_functional)
 	for (size_t i = 0; i < opcodes_bytecode.size(); i++)
 	{
 		vector<string> errors;
-		bytes code = lll::compileLLL(opcodes_lll[i], solidity::test::Options::get().evmVersion(), false, &errors);
+		bytes code = lll::compileLLL(opcodes_lll[i], solidity::test::CommonOptions::get().evmVersion(), false, &errors);
 
 		BOOST_REQUIRE_MESSAGE(errors.empty(), opcodes_lll[i]);
 
@@ -657,7 +657,7 @@ BOOST_AUTO_TEST_CASE(valid_opcodes_asm)
 	for (size_t i = 0; i < opcodes_bytecode.size(); i++)
 	{
 		vector<string> errors;
-		bytes code = lll::compileLLL(opcodes_lll[i], solidity::test::Options::get().evmVersion(), false, &errors);
+		bytes code = lll::compileLLL(opcodes_lll[i], solidity::test::CommonOptions::get().evmVersion(), false, &errors);
 
 		BOOST_REQUIRE_MESSAGE(errors.empty(), opcodes_lll[i]);
 

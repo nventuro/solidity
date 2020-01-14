@@ -343,7 +343,7 @@ protected:
 		if (!s_compiledEns)
 		{
 			vector<string> errors;
-			s_compiledEns.reset(new bytes(compileLLL(ensCode, solidity::test::Options::get().evmVersion(), solidity::test::Options::get().optimize, &errors)));
+			s_compiledEns.reset(new bytes(compileLLL(ensCode, solidity::test::CommonOptions::get().evmVersion(), solidity::test::CommonOptions::get().optimize, &errors)));
 			BOOST_REQUIRE(errors.empty());
 		}
 		sendMessage(*s_compiledEns, true);

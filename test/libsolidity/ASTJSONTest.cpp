@@ -16,7 +16,7 @@
 */
 
 #include <test/libsolidity/ASTJSONTest.h>
-#include <test/Options.h>
+#include <test/Common.h>
 #include <libsolutil/AnsiColorized.h>
 #include <liblangutil/SourceReferenceFormatterHuman.h>
 #include <libsolidity/ast/ASTJsonConverter.h>
@@ -104,7 +104,7 @@ TestCase::TestResult ASTJSONTest::run(ostream& _stream, string const& _linePrefi
 		sourceIndices[m_sources[i].first] = i + 1;
 	}
 	c.setSources(sources);
-	c.setEVMVersion(solidity::test::Options::get().evmVersion());
+	c.setEVMVersion(solidity::test::CommonOptions::get().evmVersion());
 	if (c.parse())
 		c.analyze();
 	else
