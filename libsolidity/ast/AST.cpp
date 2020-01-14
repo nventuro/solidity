@@ -110,6 +110,12 @@ vector<VariableDeclaration const*> ContractDefinition::stateVariablesIncludingIn
 	return stateVars;
 }
 
+bool ContractDefinition::derives(ContractDefinition const& _base) const
+{
+	auto const& currentBases = annotation().linearizedBaseContracts;
+	return find(currentBases.begin(), currentBases.end(), &_base) != currentBases.end();
+}
+
 map<util::FixedHash<4>, FunctionTypePointer> ContractDefinition::interfaceFunctions() const
 {
 	auto exportedFunctionList = interfaceFunctionList();
@@ -219,36 +225,6 @@ vector<pair<util::FixedHash<4>, FunctionTypePointer>> const& ContractDefinition:
 		}
 	}
 	return *m_interfaceFunctionList;
-}
-
-vector<Declaration const*> const& ContractDefinition::inheritableMembers() const
-{
-	if (!m_inheritableMembers)
-	{
-		m_inheritableMembers = make_unique<vector<Declaration const*>>();
-		auto addInheritableMember = [&](Declaration const* _decl)
-		{
-			solAssert(_decl, "addInheritableMember got a nullpointer.");
-			if (_decl->isVisibleInDerivedContracts())
-				m_inheritableMembers->push_back(_decl);
-		};
-
-		for (FunctionDefinition const* f: definedFunctions())
-			addInheritableMember(f);
-
-		for (VariableDeclaration const* v: stateVariables())
-			addInheritableMember(v);
-
-		for (StructDefinition const* s: definedStructs())
-			addInheritableMember(s);
-
-		for (EnumDefinition const* e: definedEnums())
-			addInheritableMember(e);
-
-		for (EventDefinition const* e: events())
-			addInheritableMember(e);
-	}
-	return *m_inheritableMembers;
 }
 
 TypePointer ContractDefinition::type() const

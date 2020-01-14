@@ -2957,12 +2957,30 @@ FunctionTypePointer FunctionType::interfaceFunctionType() const
 	);
 }
 
-MemberList::MemberMap FunctionType::nativeMembers(ContractDefinition const*) const
+MemberList::MemberMap FunctionType::nativeMembers(ContractDefinition const* _scope) const
 {
 	switch (m_kind)
 	{
 	case Kind::Declaration:
-		return {{"selector", TypeProvider::fixedBytes(4)}};
+		if (declaration().isPartOfExternalInterface())
+			return {{"selector", TypeProvider::fixedBytes(4)}};
+		else
+			return MemberList::MemberMap();
+	case Kind::Internal:
+		if (
+			auto const* functionDefinition = dynamic_cast<FunctionDefinition const*>(m_declaration);
+			functionDefinition &&
+			_scope &&
+			functionDefinition->annotation().contract &&
+			_scope != functionDefinition->annotation().contract &&
+			functionDefinition->isPartOfExternalInterface()
+		)
+		{
+			solAssert(_scope->derives(*functionDefinition->annotation().contract), "");
+			return {{"selector", TypeProvider::fixedBytes(4)}};
+		}
+		else
+			return MemberList::MemberMap();
 	case Kind::External:
 	case Kind::Creation:
 	case Kind::BareCall:
@@ -3406,36 +3424,35 @@ MemberList::MemberMap TypeType::nativeMembers(ContractDefinition const* _current
 	if (m_actualType->category() == Category::Contract)
 	{
 		ContractDefinition const& contract = dynamic_cast<ContractType const&>(*m_actualType).contractDefinition();
-		bool isBase = false;
-		if (_currentScope != nullptr)
+		bool inDerivingScope = _currentScope && _currentScope->derives(contract);
+
+		for (auto const* declaration: contract.declarations())
 		{
-			auto const& currentBases = _currentScope->annotation().linearizedBaseContracts;
-			isBase = (find(currentBases.begin(), currentBases.end(), &contract) != currentBases.end());
-		}
-		if (isBase)
-		{
-			// We are accessing the type of a base contract, so add all public and protected
-			// members. Note that this does not add inherited functions on purpose.
-			for (Declaration const* decl: contract.inheritableMembers())
-				members.emplace_back(decl->name(), decl->type(), decl);
-		}
-		else
-		{
-			bool inLibrary = contract.isLibrary();
-			for (FunctionDefinition const* function: contract.definedFunctions())
-				if (
-					(inLibrary && function->isVisibleAsLibraryMember()) ||
-					(!inLibrary && function->isPartOfExternalInterface())
-				)
-					members.emplace_back(
-						function->name(),
-						FunctionType(*function).asCallableFunction(inLibrary),
-						function
-					);
-			for (auto const& stru: contract.definedStructs())
-				members.emplace_back(stru->name(), stru->type(), stru);
-			for (auto const& enu: contract.definedEnums())
-				members.emplace_back(enu->name(), enu->type(), enu);
+			if (dynamic_cast<ModifierDefinition const*>(declaration))
+				continue;
+			else if (auto const* function = dynamic_cast<FunctionDefinition const*>(declaration))
+			{
+				if (contract.isLibrary() && declaration->isVisibleAsLibraryMember())
+					members.emplace_back(function->name(), FunctionType(*function).asCallableFunction(true), declaration);
+				else if (!contract.isLibrary() && inDerivingScope && function->isVisibleInDerivedContracts())
+				{
+					if (function->isImplemented())
+						members.emplace_back(declaration->name(), declaration->type(), declaration);
+					else
+						members.emplace_back(function->name(), TypeProvider::function(*function), function);
+				}
+				else if (declaration->isVisibleViaContractName())
+					members.emplace_back(function->name(), TypeProvider::function(*function), function);
+			}
+			else if (contract.isLibrary())
+			{
+				if (declaration->isVisibleAsLibraryMember())
+					members.emplace_back(declaration->name(), declaration->type(), declaration);
+			}
+			else if (inDerivingScope && declaration->isVisibleInDerivedContracts())
+					members.emplace_back(declaration->name(), declaration->type(), declaration);
+			else if (declaration->isVisibleViaContractName())
+					members.emplace_back(declaration->name(), declaration->type(), declaration);
 		}
 	}
 	else if (m_actualType->category() == Category::Enum)

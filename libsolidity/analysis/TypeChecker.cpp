@@ -2660,8 +2660,7 @@ bool TypeChecker::visit(Identifier const& _identifier)
 	);
 	annotation.isLValue = annotation.referencedDeclaration->isLValue();
 	annotation.type = annotation.referencedDeclaration->type();
-	if (!annotation.type)
-		m_errorReporter.fatalTypeError(_identifier.location(), "Declaration referenced before type could be determined.");
+	solAssert(annotation.type, "Declaration referenced before type could be determined.");
 	if (auto variableDeclaration = dynamic_cast<VariableDeclaration const*>(annotation.referencedDeclaration))
 		annotation.isPure = annotation.isConstant = variableDeclaration->isConstant();
 	else if (dynamic_cast<MagicVariableDeclaration const*>(annotation.referencedDeclaration))

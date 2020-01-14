@@ -9,7 +9,7 @@ Compiler Features:
  * Yul Optimizer: Apply penalty when trying to rematerialize into loops.
 
 Bugfixes:
-
+ * Fixes internal compiler error on explicitly calling unimplemented base functions.
 
 
 ### 0.6.1 (2020-01-02)
